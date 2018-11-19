@@ -1,3 +1,8 @@
+from BoardGame import *
+from Joueur import *
+
+
+
 class Jeu:
 
     def __init__(self,t,n):
@@ -6,12 +11,12 @@ class Jeu:
 
 
 def jeu():
-    print("Initialisation")
+    print("INITIALISATION \n")
     taille_grille= input("taille de la grille :")
     taille_grille=int(taille_grille)
-    nbre_joueurs= input("Nombre de joueurs :")
+    nbre_joueurs= input("Nombre de joueurs :\n")
     nbre_joueurs=int(nbre_joueurs)
-    joueurs=[joueur for k in range(nbre_joueurs)]
+    joueurs=[Player for k in range(nbre_joueurs)]
     k=0
     for j in joueurs:
         k+=1
@@ -19,8 +24,8 @@ def jeu():
         IA=input('Ordi (y ou n):')
         if IA=="y":
             j.type_is_IA=True
-        print("actions")
-        position=input("Positions ? (y ou n) :")
+        print("ACTIONS \n")
+        position=input("Positions (y ou n) :")
         if position=="y":
             j.action=position
             coordonées=input("1D ou 2D (1 ou 2) :")
@@ -28,6 +33,7 @@ def jeu():
         if deplacement=="y":
             j.action=deplacement
             fusion=input("fusion (y ou n) :")
+
 
 
 
