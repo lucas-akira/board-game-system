@@ -1,2 +1,2 @@
 # table-game-system
-General table game system made during CentraleSupélec's Coding Weeks
+General board game system made during CentraleSupélec's Coding Weeks.
