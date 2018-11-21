@@ -135,12 +135,18 @@ def add_turn_actions(grid):
     elif option == "3":
         return None
 
-def add_victory(grid):
+def add_victory():
     print("What type of victory do you choose?")
     print("1: Victory when a line, a row or a diagonal is completed")
     print("2: Victory when you get a special value")
     option = input()
     if option = "1":
+        return "1", None
+
+    else:
+        value = input("What value do you choose for limit")
+        return "2", value
+
 
 
 
@@ -161,6 +167,7 @@ def start_menu():
             print("Option 2")
         elif option == "1":
             turn = create_game_menu()
+            type_victory, value = add_victory()
         else:
             print("Invalid option! Try again!")
 

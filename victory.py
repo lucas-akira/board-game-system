@@ -1,3 +1,5 @@
+import menu
+
 #2 fois fonction transposer
 def transpose_grid(grid):
     grid_t = []
@@ -94,11 +96,51 @@ def victory_by_value(grid, value):
                 return True
     return False
 
-def 
+def end_by_board_full(grid): #return True if no more available movement in the grid (for 2048)
+    n=len(grid) - 1
+    m=len(grid[0]) - 1
+
+    if grid[0][0] == grid[0][1] or grid[0][0] == grid[1][0] :
+        return True
+
+    elif grid[0][m] == grid[0][m-1] or grid[0][m] == grid[1][m]:
+        return True
+
+    elif grid[n][0] == grid[n-1][0] or grid[n][0] == grid[n][1]:
+        return True
+
+    elif grid[n][m] == grid[n][m-1] or grid[n][m] == grid[n-1][m]:
+        return True
+
+    else:
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if i == 0 and (j != 0 or j != m):
+                    if grid[i][j] == grid[i][j-1] or grid[i][j] == grid[i][j+1] or grid[i][j] == grid[i+1][j]:
+                        return True
+
+                elif i == n and (j != 0 or j != m):
+                    if grid[i][j] == grid[i][j-1] or grid[i][j] == grid[i][j+1] or grid[i][j] == grid[i-1][j]:
+                        return True
+
+                elif j == 0 and (i != 0 or i != n):
+                    if grid[i][j] == grid[i-1][j] or grid[i][j] == grid[i+1][j] or grid[i][j] == grid[i][j+1]:
+                        return True
+
+                elif j == m and (i != 0 or i != n):
+                    if grid[i][j] == grid[i-1][j] or grid[i][j] == grid[i+1][j] or grid[i][j] == grid[i][j-1]:
+                        return True
+
+                else:
+                    if grid[i][j] == grid[i-1][j] or grid[i][j] == grid[i+1][j] or grid[i][j] == grid[i][j-1] or grid[i][j] == grid[i][j+1]:
+                        return True
+    return False
 
 
-def victory(grid, necessary_length, option):
-    if option = "1":
+
+
+def victory(grid, necessary_length, type_victory):
+    if type_victory == "1":
         # Horizontal verification
         exists_winner, element, row_number = verify_grid_rows(grid, necessary_length)
         if exists_winner:
@@ -157,11 +199,19 @@ def victory(grid, necessary_length, option):
             print(diagonal)
         return False, None, -1
 
-    elif option = "2":
-        if victory_by_value:
+    elif type_victory == "2":
+
+        if victory_by_value(grid, value):
             print("Victory! Well done")
             return True
-        e
+
+        elif end_by_board_full(grid):
+            print("Board full, try again!")
+            return False
+
+        else:
+            return None
+
 
 
 
