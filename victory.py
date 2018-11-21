@@ -19,7 +19,7 @@ def verify_row(row, necessary_length):
     for element in row:
         # Analyse each row
         # Count repeated elements in a row
-        if element == pawn_to_verify:
+        if element == pawn_to_verify and element != 0:  # Do not consider 0 an element: it's considered an empty space
             actual_length += 1
             # If the length of these repeated elements reaches the necessary length to victory, stop
             if actual_length == necessary_length:
