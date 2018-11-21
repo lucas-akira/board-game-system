@@ -84,17 +84,43 @@ def create_game_menu():
 
         if option == "1":
             print("Continuing...")
-            board = BoardGame(name, height, width, number_players, piece_markers)
-            actions = add_turn_actions(board.grid)
+            # Create a new BoardGame Object
+            board = BoardGame(name, height, width)
 
+            # But we still need to define the following parameters in this object before we can use it:
+            # - piece_marker_dict
+            # - turn (An object of Turn)
+            # - players (List of players, will be well defined during game execution rather than creation)
+            # At the moment (game creation), we'll define the first two
+
+
+            # Define piece_marker_dict:
+            # Create a dictionary to relate each type of piece with its marker
+            marker_dict = {}
+            multiple_of_two = 2
+            for marker in piece_markers:
+                marker_dict[multiple_of_two] = marker
+                multiple_of_two *= 2
+            # Add dictionary in board object
+            board.piece_marker_dict = marker_dict
+            print("Correspondence (piece : marker)")
+            print(marker_dict)
+
+            # To well define the turn object, we need to define a set of actions
+            actions = add_turn_actions(board.grid)
+            # Verify if list of actions creation was successful
             if actions is not None:
                 # Instanciate a turn
                 turn = Turn()
+                # Define its actions
                 turn.actions = actions
-                ##### after an action, define game over conditions
 
+                # Then, put it into board
+                board.turn = turn
                 for action in actions:
                     print("Action: {} with description: {}".format(action.keyboard_input, action.description))
+
+            # TODO: Define game over conditions
 
             repeat = False
         elif option == "2":
@@ -126,6 +152,8 @@ def add_turn_actions(grid):
         action = Action("s", "Move down", ["move_grid"], grid = grid, direction = "down")
         actions.append(action)
 
+        ## TODO: Ask about Game over conditions
+
         return actions
 
     elif option == "2":
@@ -149,7 +177,7 @@ def start_menu():
             # Start created game
             print("Option 2")
         elif option == "1":
-            turn = create_game_menu()
+            board = create_game_menu()
         else:
             print("Invalid option! Try again!")
 
