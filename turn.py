@@ -1,7 +1,13 @@
+from action import Action
+
 class Turn:
     player = None
     actions = [] # List of actions
     response = ""
+
+    def __init__(self):
+        # Instantiate a dummy Action object as the default value
+        self.action_executed = Action('=', "default_description", ["procedure"])
 
     def list_actions(self):
         print("Player {}'s turn".format(self.player.name))
@@ -10,12 +16,12 @@ class Turn:
             print("{} : ({})".format(action.description, action.keyboard_input))
 
     def ask_action(self):
-        self.list_actions()
         print("Choose an action:")
         self.response = input()
 
     def execute_action(self):
         for action in self.actions:
             if action.keyboard_input == self.response:
+                self.action_executed = action
                 action.execute()
                 break

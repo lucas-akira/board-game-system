@@ -12,7 +12,7 @@ class Procedures:
     direction = " "
     position = (-1,-1)
 
-    def __init__(self, row, grid, direction, position):
+    def __init__(self, row=[], grid=[], direction="", position=(-1,-1)):
         self.row = row
         self.grid = grid
         self.direction = direction
@@ -93,7 +93,6 @@ class Procedures:
 
             return grid
 
-    @staticmethod
     def move_possible(self, grid = []):
         directions = ["left", "up", "right", "down"]
         result_list = []  # In order: [Left, Up, Right, Down]

@@ -228,7 +228,8 @@ def grid_to_string_with_size_and_theme(grid, theme_dict, number_lines):
 
 
 def is_game_over(grid):
-    if Procedures.move_possible(grid) == [False, False, False, False]:
+    procedures = Procedures()
+    if procedures.move_possible(grid) == [False, False, False, False]:
         return True
     else:
         return False

@@ -1,4 +1,4 @@
-from boardgame import BoardGame
+from boardgame import Boardgame
 from action import Action
 from turn import Turn
 
@@ -50,7 +50,7 @@ def create_game_menu():
         width = int_input_greater_than_one()
 
         print("Number of players:")
-        number_players = positive_int_input()
+        max_number_players = positive_int_input()
 
         piece_markers = []
         print("How many types of pieces?")
@@ -82,12 +82,17 @@ def create_game_menu():
         print("3: Go back to menu")
         option = input()
 
-        if option == "1":
+        if option == "1": # 2048-like game
+
             print("Continuing...")
             # Create a new BoardGame Object
-            board = BoardGame(name, height, width)
+            board = Boardgame(name, height, width, max_number_players)
 
-            # But we still need to define the following parameters in this object before we can use it:
+            # Set the type of the board
+            board.type = "2048-like"
+
+            # But we still need to define the following parameters in this object before we can use the board:
+            # - type (Just defined in previous lines)
             # - piece_marker_dict
             # - turn (An object of Turn)
             # - players (List of players, will be well defined during game execution rather than creation)
@@ -96,7 +101,7 @@ def create_game_menu():
 
             # Define piece_marker_dict:
             # Create a dictionary to relate each type of piece with its marker
-            marker_dict = {}
+            marker_dict = {0: " "}
             multiple_of_two = 2
             for marker in piece_markers:
                 marker_dict[multiple_of_two] = marker
@@ -110,7 +115,7 @@ def create_game_menu():
             actions = add_turn_actions(board.grid)
             # Verify if list of actions creation was successful
             if actions is not None:
-                # Instanciate a turn
+                # Instantiate a turn
                 turn = Turn()
                 # Define its actions
                 turn.actions = actions
@@ -120,13 +125,13 @@ def create_game_menu():
                 for action in actions:
                     print("Action: {} with description: {}".format(action.keyboard_input, action.description))
 
-            # TODO: Define game over conditions
-
             repeat = False
         elif option == "2":
             repeat = True
         elif option == "3":
             repeat = False
+
+    return board
 
 
 def add_turn_actions(grid):
@@ -137,7 +142,6 @@ def add_turn_actions(grid):
     option = input()
     actions = []
     if option == "1":
-        print("Select which keyboard button will correspond ")
         # Instanciate an action
         action = Action("a", "Move left", ["move_grid"], grid = grid, direction = "left")
         # Put it in the list of actions
@@ -146,14 +150,11 @@ def add_turn_actions(grid):
         action = Action("w", "Move up", ["move_grid"], grid = grid, direction = "up")
         actions.append(action)
 
-        action = Action("d", "Move right", ["move_grid"], grid = grid, direction = "right")
+        action = Action("d", "Move right", ["move_grid"], grid=grid, direction="right")
         actions.append(action)
 
-        action = Action("s", "Move down", ["move_grid"], grid = grid, direction = "down")
+        action = Action("s", "Move down", ["move_grid"], grid=grid, direction="down")
         actions.append(action)
-
-        ## TODO: Ask about Game over conditions
-
         return actions
 
     elif option == "2":
@@ -165,6 +166,7 @@ def add_turn_actions(grid):
 
 def start_menu():
     menu_loop = True
+    board = None
     while menu_loop:
         print("__Board Game__")
         list_options()
@@ -175,7 +177,10 @@ def start_menu():
             menu_loop = False
         elif option == "2":
             # Start created game
-            print("Option 2")
+            if board is not None:
+                board.run_game()
+            else:
+                print("No game loaded!")
         elif option == "1":
             board = create_game_menu()
         else:
