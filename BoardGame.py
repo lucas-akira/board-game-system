@@ -11,7 +11,7 @@ class Boardgame:
     players = []
     type = ""  # Options: "2048-like" or "tic-tac-toe-like"
 
-    def __init__(self, name, height, width, max_number_players):
+    def __init__(self, name, height, width, max_number_players, end_type, length_to_win):
         self.name = name
         self.width = width
         self.height = height
@@ -117,3 +117,7 @@ class Boardgame:
         print(grid_to_string_with_size_and_theme(self.grid, self.piece_marker_dict, len(self.grid)))
         print("Game Over !")
 
+        self.number_players = number_players
+        self.piece_markers = piece_markers
+        self.verify_go_each_turn = end_type
+        self.length_to_win = length_to_win

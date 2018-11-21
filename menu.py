@@ -67,12 +67,19 @@ def create_game_menu():
                 else:
                     print("Marker can't be 0! Try again")
                     need_to_ask = True
+        print("Verify win every turn? (y or n)")
+        end_type=input()
+        print("Length to win:")
+        length_to_win = positive_int_input()
+
         print("-------------------------------------")
         print("Recap: ")
         print("Name: {}".format(name))
         print("Grid height: {}".format(height))
         print("Grid width: {}".format(width))
         print("Pieces:")
+        print("End type: {}".format(end_type))
+        print("Length to win: {}".format(length_to_win))
         for i in range(number_types_pieces):
             print("  Piece number {}: {}".format(i+1, piece_markers[i]))
 
@@ -85,8 +92,9 @@ def create_game_menu():
         if option == "1": # 2048-like game
 
             print("Continuing...")
+
             # Create a new BoardGame Object
-            board = Boardgame(name, height, width, max_number_players)
+            board = Boardgame(name, height, width, max_number_players, end_type, length_to_win)
 
             # Set the type of the board
             board.type = "2048-like"
@@ -112,6 +120,7 @@ def create_game_menu():
             print(marker_dict)
 
             # To well define the turn object, we need to define a set of actions
+
             actions = add_turn_actions(board.grid)
             # Verify if list of actions creation was successful
             if actions is not None:
@@ -130,9 +139,13 @@ def create_game_menu():
             repeat = True
         elif option == "3":
             repeat = False
+<<<<<<< HEAD
 
     return board
 
+=======
+    return board, actions
+>>>>>>> 40a15f522b2993dbdd95ee2af5a543f986a3ae3c
 
 def add_turn_actions(grid):
     print("What should each player generally do in their turn?")
