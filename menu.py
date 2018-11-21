@@ -67,12 +67,19 @@ def create_game_menu():
                 else:
                     print("Marker can't be 0! Try again")
                     need_to_ask = True
+        print("Verify win every turn? (y or n)")
+        end_type=input()
+        print("Length to win:")
+        length_to_win = positive_int_input()
+
         print("-------------------------------------")
         print("Recap: ")
         print("Name: {}".format(name))
         print("Grid height: {}".format(height))
         print("Grid width: {}".format(width))
         print("Pieces:")
+        print("End type: {}".format(end_type))
+        print("Length to win: {}".format(length_to_win))
         for i in range(number_types_pieces):
             print("  Piece number {}: {}".format(i+1, piece_markers[i]))
 
@@ -84,7 +91,7 @@ def create_game_menu():
 
         if option == "1":
             print("Continuing...")
-            board = BoardGame(name, height, width, number_players, piece_markers)
+            board = BoardGame(name, height, width, number_players, piece_markers,end_type,length_to_win)
             actions = add_turn_actions(board.grid)
 
             if actions is not None:
@@ -101,7 +108,7 @@ def create_game_menu():
             repeat = True
         elif option == "3":
             repeat = False
-
+    return board, actions
 
 def add_turn_actions(grid):
     print("What should each player generally do in their turn?")
