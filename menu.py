@@ -139,13 +139,9 @@ def create_game_menu():
             repeat = True
         elif option == "3":
             repeat = False
-<<<<<<< HEAD
 
-    return board
-
-=======
     return board, actions
->>>>>>> 40a15f522b2993dbdd95ee2af5a543f986a3ae3c
+
 
 def add_turn_actions(grid):
     print("What should each player generally do in their turn?")
