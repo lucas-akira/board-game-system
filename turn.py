@@ -16,6 +16,6 @@ class Turn:
 
     def execute_action(self):
         for action in self.actions:
-            #if action.keyboard_input == self.response:
+            if action.keyboard_input == self.response:
                 action.execute()
                 break
