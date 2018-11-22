@@ -98,35 +98,22 @@ def create_game_menu(board_list):
 
             print("Continuing...")
 
-            # Create a new BoardGame Object
+            # Create a new Boardgame Object
             board = Boardgame(name, height, width, max_number_players, end_type, length_to_win)
 
-            # Set the type of the board
-            board.type = "2048-like"
-
             # But we still need to define the following parameters in this object before we can use the board:
-            # - type (Just defined in previous lines)
+            # - type (defined inside add_turn_actions())
             # - piece_marker_dict
             # - turn (An object of Turn)
             # - players (List of players, will be well defined during game execution rather than creation)
-            # At the moment (game creation), we'll define the first two
-
+            # At the moment (game creation), we'll define the first three
 
             # Define piece_marker_dict:
             # Create a dictionary to relate each type of piece with its marker
             marker_dict = {0: " "}
-            multiple_of_two = 2
-            for marker in piece_markers:
-                marker_dict[multiple_of_two] = marker
-                multiple_of_two *= 2
-            # Add dictionary in board object
-            board.piece_marker_dict = marker_dict
-            print("Correspondence (piece : marker)")
-            print(marker_dict)
 
             # To well define the turn object, we need to define a set of actions
-
-            actions = add_turn_actions(board.grid)
+            actions = add_turn_actions(board, marker_dict, piece_markers)
             # Verify if list of actions creation was successful
             if actions is not None:
                 # Instantiate a turn
@@ -173,7 +160,8 @@ def create_game_menu(board_list):
     return board, actions
 
 
-def add_turn_actions(grid):
+def add_turn_actions(board, marker_dict, piece_markers):
+
     print("What should each player generally do in their turn?")
     print("1: Try to move all the pieces in the grid in a general position, summing common ones (e.g: 2048)")
     print("2: Add individual pieces in empty spaces (e.g: tic-tac-toe)")
@@ -181,19 +169,76 @@ def add_turn_actions(grid):
     option = input()
     actions = []
     if option == "1":
-        # Instanciate an action
-        action = Action("a", "Move left", ["move_grid"], grid = grid, direction = "left")
+
+        # Set the type of the board
+        board.type = "2048-like"
+
+        multiple_of_two = 2
+        for marker in piece_markers:
+            marker_dict[multiple_of_two] = marker
+            multiple_of_two *= 2
+        # Add dictionary in board object
+        board.piece_marker_dict = marker_dict
+        print("Correspondence (piece : marker)")
+        print(board.piece_marker_dict)
+
+        repeat = True
+        while repeat:
+            # Ask to add an action:
+            print("1: Move left")
+            print("2: Move up")
+            print("3: Move right")
+            print("4: Move down")
+            print("Which action do you want to add: ")
+            action_option = positive_int_input()
+
+            print("Which key/string do you want to associate this action with? (Write it and press enter)")
+            keyboard_input = input()
+            if action_option == 1:
+                # Instantiate an action
+                action = Action(keyboard_input, "Move left", ["move_grid"], grid = board.grid, direction = "left")
+            elif action_option == 2:
+                action = Action(keyboard_input, "Move up", ["move_grid"], grid = board.grid, direction = "up")
+            elif action_option == 3:
+                action = Action(keyboard_input, "Move right", ["move_grid"], grid = board.grid, direction="right")
+            elif action_option == 4:
+                action = Action(keyboard_input, "Move down", ["move_grid"], grid = board.grid, direction="down")
+
+            # Add the action in the list
+            actions.append(action)
+
+            ask_to_add = True
+            while ask_to_add:
+                print("Add another action?")
+                print("1: Yes")
+                print("2: No")
+                option = positive_int_input()
+                if option == 1:
+                    repeat = True
+                    ask_to_add = False
+                elif option == 2:
+                    repeat = False
+                    ask_to_add = False
+                else:
+                    print("Invalid option! Try again")
+                    ask_to_add = True
+
+
+
+        # Instantiate an action
+        #action = Action("a", "Move left", ["move_grid"], grid = board.grid, direction = "left")
         # Put it in the list of actions
-        actions.append(action)
+        #actions.append(action)
         # Repeat for each direction
-        action = Action("w", "Move up", ["move_grid"], grid = grid, direction = "up")
-        actions.append(action)
+        #action = Action("w", "Move up", ["move_grid"], grid = board.grid, direction = "up")
+        #actions.append(action)
 
-        action = Action("d", "Move right", ["move_grid"], grid=grid, direction="right")
-        actions.append(action)
+        #action = Action("d", "Move right", ["move_grid"], grid = board.grid, direction="right")
+        #actions.append(action)
 
-        action = Action("s", "Move down", ["move_grid"], grid=grid, direction="down")
-        actions.append(action)
+        #action = Action("s", "Move down", ["move_grid"], grid = board.grid, direction="down")
+        #actions.append(action)
+
         return actions
 
     elif option == "2":
