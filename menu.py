@@ -197,15 +197,22 @@ def add_turn_actions(board, marker_dict, piece_markers):
             if action_option == 1:
                 # Instantiate an action
                 action = Action(keyboard_input, "Move left", ["move_grid"], grid = board.grid, direction = "left")
+                # Add the action in the list
+                actions.append(action)
             elif action_option == 2:
                 action = Action(keyboard_input, "Move up", ["move_grid"], grid = board.grid, direction = "up")
+                # Add the action in the list
+                actions.append(action)
             elif action_option == 3:
                 action = Action(keyboard_input, "Move right", ["move_grid"], grid = board.grid, direction="right")
+                # Add the action in the list
+                actions.append(action)
             elif action_option == 4:
                 action = Action(keyboard_input, "Move down", ["move_grid"], grid = board.grid, direction="down")
+                # Add the action in the list
+                actions.append(action)
 
-            # Add the action in the list
-            actions.append(action)
+
 
             ask_to_add = True
             while ask_to_add:
