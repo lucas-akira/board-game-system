@@ -1,7 +1,6 @@
 # File with general grid related functions
 
 import random
-from procedures import *
 
 
 def create_grid(size=4):  # Fonction renvoyant une grille de taille size
@@ -225,14 +224,6 @@ def grid_to_string_with_size_and_theme(grid, theme_dict, number_lines):
     """
     max_element_length, thematic_grid = long_value_with_theme(grid, theme_dict)
     return grid_to_string_with_size(thematic_grid, number_lines)
-
-
-def is_game_over(grid):
-    procedures = Procedures()
-    if procedures.move_possible(grid) == [False, False, False, False]:
-        return True
-    else:
-        return False
 
 
 def get_grid_tile_max(grid):

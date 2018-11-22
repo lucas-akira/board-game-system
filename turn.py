@@ -1,5 +1,6 @@
 from action import Action
 
+
 class Turn:
     player = None
     actions = [] # List of actions
@@ -20,8 +21,20 @@ class Turn:
         self.response = input()
 
     def execute_action(self):
+        result = []
         for action in self.actions:
+            # Check if user has entered a valid input
             if action.keyboard_input == self.response:
                 self.action_executed = action
-                action.execute()
-                break
+                result = action.execute()
+
+        # If the user did input a valid option, result will be changed (with the updated grid)
+        if len(result) > 0:
+            # Update all action grids
+            for action in self.actions:
+                action.grid = result
+            return result
+        # Else, result will still be an empty list (with length 0), so return None in this case
+        else:
+            return None
+

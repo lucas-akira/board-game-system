@@ -74,24 +74,27 @@ class Procedures:
             if direction == " ":
                 direction = self.direction
 
+            # Create a deep copy of the grid so that the moves do not change the original grid
+            grid_to_modify = copy.deepcopy(grid)
+
             if direction == "left":
-                for row in grid:
+                for row in grid_to_modify:
                     self.move_row_left(row)
             elif direction == "right":
-                for row in grid:
+                for row in grid_to_modify:
                     self.move_row_right(row)
             elif direction == "up":
-                grid_t = transpose_grid(grid)
+                grid_t = transpose_grid(grid_to_modify)
                 for row in grid_t:
                     self.move_row_left(row)
-                grid = transpose_grid(grid_t)
+                grid_to_modify = transpose_grid(grid_t)
             elif direction == "down":
-                grid_t = transpose_grid(grid)
+                grid_t = transpose_grid(grid_to_modify)
                 for row in grid_t:
                     self.move_row_right(row)
-                grid = transpose_grid(grid_t)
+                grid_to_modify = transpose_grid(grid_t)
 
-            return grid
+            return grid_to_modify
 
     def move_possible(self, grid = []):
         directions = ["left", "up", "right", "down"]
@@ -128,6 +131,12 @@ class Procedures:
         empty_spaces = get_empty_tiles_positions(self.grid)
         if self.position not in empty_spaces:
             remove_tile_at_position(self.grid, self.position)
+            return True
+        else:
+            return False
+
+    def is_game_over(self, grid):
+        if self.move_possible(grid) == [False, False, False, False]:
             return True
         else:
             return False

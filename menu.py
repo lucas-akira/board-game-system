@@ -177,6 +177,8 @@ def start_menu():
     menu_loop = True
     board = None
     while menu_loop:
+        if board is not None:
+            print("{} loaded! You can select 2 to play it!".format(board.name))
         print("__Board Game__")
         list_options()
         print("Choose an option:")
@@ -191,7 +193,7 @@ def start_menu():
             else:
                 print("No game loaded!")
         elif option == "1":
-            board = create_game_menu()
+            board,actions = create_game_menu()
         else:
             print("Invalid option! Try again!")
 

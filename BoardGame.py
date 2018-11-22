@@ -1,7 +1,7 @@
 import random
-from procedures import Procedures
 from grid import *
 from player import Player
+from procedures import Procedures
 
 
 class Boardgame:
@@ -22,47 +22,22 @@ class Boardgame:
         g2048_add_new_tile(self.grid)
         g2048_add_new_tile(self.grid)
 
-    def g2048_run(self, game_over):
+    def g2048_after_execution(self, game_over, grid_altered):
 
         # Procedures object made just to access the methods that test the game over condition
-        verify_procedures_obj = Procedures()
+        procedures_obj = Procedures()
 
-        # get the direction selected in actual turn
-        description = self.turn.action_executed.description
-        description_words = description.split()
-        direction = description_words[1]
+        # If the grid was altered, add a new random tile
+        if grid_altered:
+            g2048_add_new_tile(self.grid)
 
-        # Verify if the movement changes the grid
-        movements_allowed_list = verify_procedures_obj.move_possible(self.grid)
-        verifying_index = 0
-        if direction == "left":
-            verifying_index = 0
-        elif direction == "up":
-            verifying_index = 1
-        elif direction == "right":
-            verifying_index = 2
-        elif direction == "down":
-            verifying_index = 3
+        # Verify if it's game over
+        game_over = procedures_obj.is_game_over(self.grid)
+        max_value = get_grid_tile_max(self.grid)
 
-        # If the movement given by the user is valid (changes the grid):
-        if movements_allowed_list[verifying_index]:
-            # Move the grid
-            #self.grid = verify_procedures_obj.move_grid(self.grid, direction)
-            self.turn.execute_action()
-
-            # Verify if it's game over (To decide if it should add a new random tile)
-            game_over = is_game_over(self.grid)
-            if not game_over:
-                # If the grid was altered, add a new random tile
-                g2048_add_new_tile(self.grid)
-
-            # Verify if it's game over again (To really verify if it is game over)
-            game_over = is_game_over(self.grid)
-            max_value = get_grid_tile_max(self.grid)
-
-            if max_value == 2048:
-                print("Congratulations! You have a winning configuration!")
-        # Otherwise, do nothing
+        if max_value == 2048:
+            print("Congratulations! You have a winning configuration!")
+        return game_over
 
     def init_game(self):
         if self.type == "2048-like":
@@ -90,7 +65,8 @@ class Boardgame:
         self.init_game()
 
         # Create game loop
-        turn_index = 0
+        turn_index = 0 # Variable to keep track of each player's turn
+        grid_altered = True # Variable that tells if the grid was altered after an action
         game_over = False
         while not game_over: # Game loop
 
@@ -101,23 +77,40 @@ class Boardgame:
             self.turn.list_actions()
             # Ask the player which action he/she will perform
             self.turn.ask_action()
-            ###
-            #self.turn.execute_action()
 
+            # Execute action
+            action_result = self.turn.execute_action()
+
+            # Check if result is valid
+            if action_result is not None:
+                # If it is, check whether the updated grid is different from the old one
+                if not equal_grids(self.grid, action_result):
+                    # Update grid
+                    self.grid = action_result
+                    grid_altered = True
+                else:
+                    grid_altered = False
+            else:
+                # Else, the user has put an invalid input (an input that is not equal to any action)
+                print("Wrong input! Try again")
+                continue
+
+            # Do things after execution (like verify movement)
             if self.type == "2048-like":
-                self.g2048_run(game_over)
+                game_over = self.g2048_after_execution(game_over, grid_altered)
 
-            # Change turn:
-            turn_index += 1
-            if turn_index == self.max_number_players:
-                turn_index = 0
-            self.turn.player = self.players[turn_index]
+            if not game_over:
+                # Change turn:
+                turn_index += 1
+                if turn_index == self.max_number_players:
+                    turn_index = 0
+                self.turn.player = self.players[turn_index]
 
         # Print the grid one more time to show the game over grid
         print(grid_to_string_with_size_and_theme(self.grid, self.piece_marker_dict, len(self.grid)))
         print("Game Over !")
 
-        self.number_players = number_players
-        self.piece_markers = piece_markers
-        self.verify_go_each_turn = end_type
-        self.length_to_win = length_to_win
+        #self.number_players = number_players
+        #self.piece_markers = piece_markers
+        #self.verify_go_each_turn = end_type
+        #self.length_to_win = length_to_win
