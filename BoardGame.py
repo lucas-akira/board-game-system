@@ -2,11 +2,10 @@ import random
 from grid import *
 from player import Player
 from procedures import Procedures
-
+from turn import Turn
 
 class Boardgame:
     piece_marker_dict = {0: " "}
-    turn = None
     max_number_players = 0
     players = []
     type = ""  # Options: "2048-like" or "tic-tac-toe-like"
@@ -17,6 +16,9 @@ class Boardgame:
         self.height = height
         self.grid = [[0 for i in range(self.width)] for j in range(self.height)]
         self.max_number_players = max_number_players
+
+        # Instantiate a dummy turn object
+        self.turn = Turn()
 
     def g2048_init(self):
         g2048_add_new_tile(self.grid)

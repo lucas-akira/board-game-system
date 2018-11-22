@@ -212,8 +212,6 @@ def add_turn_actions(board, marker_dict, piece_markers):
                 # Add the action in the list
                 actions.append(action)
 
-
-
             ask_to_add = True
             while ask_to_add:
                 print("Add another action?")
@@ -249,7 +247,25 @@ def add_turn_actions(board, marker_dict, piece_markers):
         return actions
 
     elif option == "2":
-        print("Option 2")
+        # Set the type of the board
+        board.type = "tic-tac-toe-like"
+
+        key = 1
+        for marker in piece_markers:
+            marker_dict[key] = marker
+            key += 1
+        # Add dictionary in board object
+        board.piece_marker_dict = marker_dict
+        print("Correspondence (piece : marker)")
+        print(board.piece_marker_dict)
+
+        repeat = True
+        while repeat:
+            print("1: Add piece")
+            print("2: Remove piece")
+            print("Which action do you want to add: ")
+            action_option = positive_int_input()
+
         return None
     elif option == "3":
         return None

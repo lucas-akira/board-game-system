@@ -1,4 +1,5 @@
 import copy
+from player import Player
 from grid import *
 # All non-static public methods will try to execute based on the parameters given,
 # but if no parameters are given, then these methods will use the class attributes instead
@@ -17,11 +18,12 @@ class Procedures:
         self.grid = grid
         self.direction = direction
         self.position = position
+        self.player = Player("No one")
 
     # 2048 Methods:
 
     def sum_row_left(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         n = len(row)
@@ -32,7 +34,7 @@ class Procedures:
         return row
 
     def offset_row_left(self, row):
-        if row == []:
+        if not row:
             row = self.row
 
         n = len(row)
@@ -50,7 +52,7 @@ class Procedures:
         return row
 
     def move_row_left(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         row = self.offset_row_left(row)
@@ -59,7 +61,7 @@ class Procedures:
         return row
 
     def move_row_right(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         row.reverse()
@@ -68,7 +70,7 @@ class Procedures:
         return row
 
     def move_grid(self, grid = [], direction = " "):
-            if grid == []:
+            if not grid:
                 grid = self.grid
 
             if direction == " ":
