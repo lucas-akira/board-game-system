@@ -1,12 +1,13 @@
 from boardgame import Boardgame
 from action import Action
 from turn import Turn
-
+import pickle
 
 def list_options():
     print("1: Create a new game")
     print("2: Start a new game")
-    print("3: Exit")
+    print("3: Load games from saved_games.bin")
+    print("4: Exit")
 
 
 def positive_int_input():
@@ -37,7 +38,10 @@ def int_input_greater_than_one():
     return receiver
 
 
-def create_game_menu():
+def create_game_menu(board_list):
+
+    board = None
+    actions = None
     repeat = True
     while repeat:
         print("Choose a name for the game:")
@@ -77,9 +81,10 @@ def create_game_menu():
         print("Name: {}".format(name))
         print("Grid height: {}".format(height))
         print("Grid width: {}".format(width))
-        print("Pieces:")
         print("End type: {}".format(end_type))
         print("Length to win: {}".format(length_to_win))
+        print("Pieces:")
+
         for i in range(number_types_pieces):
             print("  Piece number {}: {}".format(i+1, piece_markers[i]))
 
@@ -129,10 +134,35 @@ def create_game_menu():
                 # Define its actions
                 turn.actions = actions
 
-                # Then, put it into board
+                # Then, put it into board as the selected game (Load into menu)
                 board.turn = turn
+
+                # Show the created actions
                 for action in actions:
                     print("Action: {} with description: {}".format(action.keyboard_input, action.description))
+
+                # Add board into list
+                board_list.append(board)
+
+                # Save the created game in a file
+
+                # Try to see if the file already exists
+                try:
+                    with open("saved_games.bin", "rb") as file_object:
+                        # Load board list from file
+                        board_list = pickle.load(file_object)
+
+                        # Add newly created game into the loaded list
+                        board_list.append(board)
+                except FileNotFoundError:
+                    print("saved_games.bin not found! Creating...")
+
+                # Save board list:
+                try:
+                    with open("saved_games.bin", "wb") as file_object:
+                        pickle.dump(board_list, file_object)
+                except:
+                    print("Error trying to create saved_games.bin!")
 
             repeat = False
         elif option == "2":
@@ -173,7 +203,21 @@ def add_turn_actions(grid):
         return None
 
 
+def load_game_menu(board_list):
+    i = 0
+    for board in board_list:
+        print("{}: {}".format(i+1, board.name))
+        i += 1
+    print("Select a game: ")
+    option = positive_int_input()
+    if option <= i:
+        return board_list[option-1]
+    else:
+        print("Invalid option!")
+
+
 def start_menu():
+    board_list = []
     menu_loop = True
     board = None
     while menu_loop:
@@ -184,8 +228,22 @@ def start_menu():
         print("Choose an option:")
         option = input()
 
-        if option == "3":
+        if option == "4":
             menu_loop = False
+        elif option == "3":
+            try:
+                with open("saved_games.bin", "rb") as file_object:
+                    # Load board list from file
+                    loaded_board_list = pickle.load(file_object)
+                    if len(loaded_board_list) > 0:
+
+                        board_list = loaded_board_list
+                        # Ask to select which game to load
+                        board = load_game_menu(board_list)
+                    else:
+                        print("File corrupted!")
+            except FileNotFoundError:
+                print("saved_games.bin not found!")
         elif option == "2":
             # Start created game
             if board is not None:
@@ -193,7 +251,7 @@ def start_menu():
             else:
                 print("No game loaded!")
         elif option == "1":
-            board,actions = create_game_menu()
+            board,actions = create_game_menu(board_list)
         else:
             print("Invalid option! Try again!")
 
