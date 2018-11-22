@@ -32,7 +32,7 @@ class Boardgame:
             g2048_add_new_tile(self.grid)
 
         # Verify if it's game over
-        game_over = procedures_obj.is_game_over(self.grid)
+        game_over = procedures_obj.g2048_is_game_over(self.grid)
         max_value = get_grid_tile_max(self.grid)
 
         if max_value == 2048:

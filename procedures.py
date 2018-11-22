@@ -135,7 +135,7 @@ class Procedures:
         else:
             return False
 
-    def is_game_over(self, grid):
+    def g2048_is_game_over(self, grid):
         if self.move_possible(grid) == [False, False, False, False]:
             return True
         else:
