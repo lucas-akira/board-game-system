@@ -3,7 +3,7 @@ from player import Player
 
 
 class Turn:
-    actions = [] # List of actions
+    actions = []  # List of actions
     response = ""
 
     def __init__(self):
@@ -12,6 +12,8 @@ class Turn:
 
         # Instantiate a dummy Player object
         self.player = Player("No one")
+
+        self.piece_marker_dict = {0: " "}
 
     def list_actions(self):
         print("Player {}'s turn".format(self.player.name))
@@ -44,4 +46,3 @@ class Turn:
         # Else, result will still be an empty list, so return None in this case
         else:
             return None
-

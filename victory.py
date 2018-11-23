@@ -87,7 +87,7 @@ def get_forward_slash_diagonal(grid, uppermost_coordinates):
     return diagonal_elements
 
 
-def victory(grid, necessary_length):
+def tic_tac_toe_victory(grid, necessary_length):
     # Horizontal verification
     exists_winner, element, row_number = verify_grid_rows(grid, necessary_length)
     if exists_winner:
@@ -104,7 +104,7 @@ def victory(grid, necessary_length):
     # Diagonal verification:
 
     #   Back slash type diagonals: (\)
-    print("Backslash diagonals")
+    #  print("Backslash diagonals")
 
     #       Lower half of the diagonals
     for i in range(len(grid)-1, -1, -1):
@@ -113,7 +113,7 @@ def victory(grid, necessary_length):
         if exists_winner:
             print("Diagonal victory")
             return True, element, 0
-        print(diagonal)
+     #   print(diagonal)
 
     #       Upper half of the diagonals
     for j in range(1, len(grid[0])):
@@ -122,10 +122,10 @@ def victory(grid, necessary_length):
         if exists_winner:
             print("Diagonal victory")
             return True, element, 0
-        print(diagonal)
+     #   print(diagonal)
 
     #   Forward slash type diagonals (/)
-    print("Forward slash diagonals")
+    # print("Forward slash diagonals")
 
     #       Upper half of the diagonals
     for j in range(len(grid[0])):
@@ -134,7 +134,7 @@ def victory(grid, necessary_length):
         if exists_winner:
             print("Diagonal victory")
             return True, element, 0
-        print(diagonal)
+     #   print(diagonal)
 
     #       Lower half of the diagonals
     for i in range(1,len(grid)):
@@ -143,9 +143,9 @@ def victory(grid, necessary_length):
         if exists_winner:
             print("Diagonal victory")
             return True, element, 0
-        print(diagonal)
+     #   print(diagonal)
     return False, None, -1
 
 
-grid = [[' ',' ',' ','B',' '],[' ',' ','X','A',' '],[' ','X',' ','A',' '],['X',' ',' ','A','B']]
-print(victory(grid, 4))
+#grid = [[' ',' ',' ','B',' '],[' ',' ','X','A',' '],[' ','X',' ','A',' '],['X',' ',' ','A','B']]
+#print(victory(grid, 4))

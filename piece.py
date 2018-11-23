@@ -1,10 +1,9 @@
 class Piece:
-    position = (-1,-1)
-    marker = 'X'
-    owner = None
 
-    def __init__(self, position, marker, owner):
+    def __init__(self, position, value = 0, marker = ' '):
+        # Default initialization: empty space
         self.position = position
         self.marker = marker
-        self.owner = owner
+        # self.owner = "No one"
+        self.value = value
 
