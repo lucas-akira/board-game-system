@@ -153,7 +153,7 @@ class Boardgame:
             if not game_over:
                 # Change turn:
                 turn_index += 1
-                if turn_index == self.max_number_players:
+                if turn_index == len(self.players):
                     turn_index = 0
                 self.turn.player = self.players[turn_index]
 
