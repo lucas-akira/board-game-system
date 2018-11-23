@@ -1,14 +1,19 @@
 from action import Action
+from player import Player
 
 
 class Turn:
-    player = None
-    actions = [] # List of actions
+    actions = []  # List of actions
     response = ""
 
     def __init__(self):
         # Instantiate a dummy Action object as the default value
-        self.action_executed = Action('=', "default_description", ["procedure"])
+        self.action_executed = Action("", "default_description", ["procedure"])
+
+        # Instantiate a dummy Player object
+        self.player = Player("No one")
+
+        self.piece_marker_dict = {0: " "}
 
     def list_actions(self):
         print("Player {}'s turn".format(self.player.name))
@@ -25,16 +30,19 @@ class Turn:
         for action in self.actions:
             # Check if user has entered a valid input
             if action.keyboard_input == self.response:
+
+                # Add player as the author of the action
+                action.player = self.player
                 self.action_executed = action
                 result = action.execute()
+                break
 
         # If the user did input a valid option, result will be changed (with the updated grid)
-        if len(result) > 0:
+        if result:
             # Update all action grids
             for action in self.actions:
                 action.grid = result
             return result
-        # Else, result will still be an empty list (with length 0), so return None in this case
+        # Else, result will still be an empty list, so return None in this case
         else:
             return None
-

@@ -1,4 +1,6 @@
 import copy
+from player import Player
+from piece import Piece
 from grid import *
 # All non-static public methods will try to execute based on the parameters given,
 # but if no parameters are given, then these methods will use the class attributes instead
@@ -12,16 +14,19 @@ class Procedures:
     direction = " "
     position = (-1,-1)
 
-    def __init__(self, row=[], grid=[], direction="", position=(-1,-1)):
+    def __init__(self, row=[], grid=[], direction="", position=(-1,-1), value = 1):
         self.row = row
         self.grid = grid
         self.direction = direction
         self.position = position
+        self.player = Player("No one")
+        self.piece_marker_dict = {0: " "}
+        self.value = value
 
     # 2048 Methods:
 
     def sum_row_left(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         n = len(row)
@@ -32,7 +37,7 @@ class Procedures:
         return row
 
     def offset_row_left(self, row):
-        if row == []:
+        if not row:
             row = self.row
 
         n = len(row)
@@ -50,7 +55,7 @@ class Procedures:
         return row
 
     def move_row_left(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         row = self.offset_row_left(row)
@@ -59,7 +64,7 @@ class Procedures:
         return row
 
     def move_row_right(self, row = []):
-        if row == []:
+        if not row:
             row = self.row
 
         row.reverse()
@@ -68,7 +73,7 @@ class Procedures:
         return row
 
     def move_grid(self, grid = [], direction = " "):
-            if grid == []:
+            if not grid:
                 grid = self.grid
 
             if direction == " ":
@@ -116,24 +121,58 @@ class Procedures:
         return result_list
 
     # Tic-tac-toe methods:
-    def add_piece(self, type, owner):
+    def add_piece(self):
+        # If grid is full, do not bother trying to add
         if is_grid_full(self.grid):
-            return False
+            self.position = (-1, -1)
+            return self.grid
 
-        empty_spaces = get_empty_tiles_positions(self.grid)
+        # Create a deep copy of the grid so that it does not change the original grid
+        grid_to_modify = copy.deepcopy(self.grid)
+
+        empty_spaces = get_empty_tiles_positions(grid_to_modify)
+        # See if desired position to add is empty
         if self.position in empty_spaces:
-            add_new_tile_at_position(self.grid, self.position, type)
-            return True
+            add_new_tile_at_position(grid_to_modify, self.position, self.value)
+
+            # Create a new piece object
+            piece = Piece(self.position)
+            # Add the value of the piece
+            piece.value = self.value
+            piece.marker = self.piece_marker_dict[self.value]
+
+            # Put the piece in the list of the player
+            self.player.pieces.append(piece)
+
         else:
-            return False
+            self.position = (-1, -1)
+
+        return grid_to_modify
 
     def remove_piece(self):
         empty_spaces = get_empty_tiles_positions(self.grid)
+        # Create a deep copy of the grid so that it does not change the original grid
+        grid_to_modify = copy.deepcopy(self.grid)
+
         if self.position not in empty_spaces:
-            remove_tile_at_position(self.grid, self.position)
-            return True
+            remove_tile_at_position(grid_to_modify, self.position)
+
+            piece_to_remove = None
+            for piece in self.player.pieces:
+                if piece.position == self.position:
+                    piece_to_remove = piece
+                    break
+
+            # Verify if the the piece to remove is in the player's list of pieces
+            if piece_to_remove in self.player.pieces:
+                self.player.pieces.remove(piece_to_remove)
+            else:
+                print("Piece to remove does not belong to the actual player!")
+                self.position = (-1, -1)
         else:
-            return False
+            self.position = (-1, -1)
+
+        return grid_to_modify
 
     def g2048_is_game_over(self, grid):
         if self.move_possible(grid) == [False, False, False, False]:
