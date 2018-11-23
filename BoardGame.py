@@ -2,27 +2,60 @@ import random
 from grid import *
 from player import Player
 from procedures import Procedures
-
+from turn import Turn
+from victory import tic_tac_toe_victory
 
 class Boardgame:
     piece_marker_dict = {0: " "}
-    turn = None
     max_number_players = 0
     players = []
     type = ""  # Options: "2048-like" or "tic-tac-toe-like"
+    length_to_win = 0
 
-    def __init__(self, name, height, width, max_number_players, end_type, length_to_win):
+    def __init__(self, name, height, width, max_number_players, end_type = False , length_to_win = 3):
         self.name = name
         self.width = width
         self.height = height
         self.grid = [[0 for i in range(self.width)] for j in range(self.height)]
         self.max_number_players = max_number_players
+        self.length_to_win = length_to_win
+
+        # Instantiate a dummy turn object
+        self.turn = Turn()
+
+    def update_available_markers(self):
+        # First, get all markers
+        available_markers = list(self.piece_marker_dict.values())
+        # Remove the empty space as an available marker
+        available_markers.remove(' ')
+        # Then, search for markers being used by a player
+        for player in self.players:
+            # Remove not available markers in list
+            if player.marker in available_markers:
+                available_markers.remove(player.marker)
+        return available_markers
+
 
     def g2048_init(self):
         g2048_add_new_tile(self.grid)
         g2048_add_new_tile(self.grid)
 
-    def g2048_after_execution(self, game_over, grid_altered):
+    def tic_tac_toe_init(self):
+        selected_marker = ""
+        for player in self.players:
+            print("Associate player {} with which marker?".format(player.name))
+            available_markers = self.update_available_markers()
+            ask_marker = True
+            while ask_marker:
+                print("Available markers: {}".format(available_markers))
+                selected_marker = input()
+                if selected_marker not in available_markers:
+                    print("Invalid marker! Try again")
+                else:
+                    ask_marker = False
+                    player.marker = selected_marker
+
+    def g2048_after_execution(self, grid_altered):
 
         # Procedures object made just to access the methods that test the game over condition
         procedures_obj = Procedures()
@@ -39,9 +72,25 @@ class Boardgame:
             print("Congratulations! You have a winning configuration!")
         return game_over
 
+    def tic_tac_toe_after_execution(self, grid_altered):
+        game_over = False
+        if grid_altered:
+            game_over, winner_marker, number = tic_tac_toe_victory(self.grid, self.length_to_win)
+            if game_over:
+                winner = self.players[0]
+                for player in self.players:
+                    if player.marker == self.piece_marker_dict[winner_marker]:
+                        winner = player
+
+                print("{} has won the game!".format(winner.name))
+
+        return game_over
+
     def init_game(self):
         if self.type == "2048-like":
             self.g2048_init()
+        elif self.type == "tic-tac-toe-like":
+            self.tic_tac_toe_init()
 
     def run_game(self):
         # Add players in the game
@@ -50,7 +99,7 @@ class Boardgame:
             new_player = Player(input())
             self.players.append(new_player)
             if i+1 < self.max_number_players:
-                print("Do you want to add more players? (You can add {} more)".format(self.max_number_players-i))
+                print("Do you want to add more players? (You can add {} more)".format(self.max_number_players-(i+1)))
                 print("1: Yes")
                 print("2: No")
                 option = input()
@@ -97,7 +146,9 @@ class Boardgame:
 
             # Do things after execution (like verify movement)
             if self.type == "2048-like":
-                game_over = self.g2048_after_execution(game_over, grid_altered)
+                game_over = self.g2048_after_execution(grid_altered)
+            elif self.type == "tic-tac-toe-like":
+                game_over = self.tic_tac_toe_after_execution(grid_altered)
 
             if not game_over:
                 # Change turn:

@@ -71,18 +71,18 @@ def create_game_menu(board_list):
                 else:
                     print("Marker can't be 0! Try again")
                     need_to_ask = True
-        print("Verify win every turn? (y or n)")
-        end_type=input()
-        print("Length to win:")
-        length_to_win = positive_int_input()
+        #print("Verify win every turn? (y or n)")
+        #end_type=input()
+        #print("Length to win:")
+        #length_to_win = positive_int_input()
 
         print("-------------------------------------")
         print("Recap: ")
         print("Name: {}".format(name))
         print("Grid height: {}".format(height))
         print("Grid width: {}".format(width))
-        print("End type: {}".format(end_type))
-        print("Length to win: {}".format(length_to_win))
+        #print("End type: {}".format(end_type))
+        #print("Length to win: {}".format(length_to_win))
         print("Pieces:")
 
         for i in range(number_types_pieces):
@@ -94,12 +94,12 @@ def create_game_menu(board_list):
         print("3: Go back to menu")
         option = input()
 
-        if option == "1": # 2048-like game
+        if option == "1":
 
             print("Continuing...")
 
             # Create a new Boardgame Object
-            board = Boardgame(name, height, width, max_number_players, end_type, length_to_win)
+            board = Boardgame(name, height, width, max_number_players)
 
             # But we still need to define the following parameters in this object before we can use the board:
             # - type (defined inside add_turn_actions())
@@ -168,7 +168,7 @@ def add_turn_actions(board, marker_dict, piece_markers):
     print("3: Go back to menu")
     option = input()
     actions = []
-    if option == "1":
+    if option == "1":  # 2048-like game
 
         # Set the type of the board
         board.type = "2048-like"
@@ -185,15 +185,19 @@ def add_turn_actions(board, marker_dict, piece_markers):
         repeat = True
         while repeat:
             # Ask to add an action:
+            print("Actions available: ")
             print("1: Move left")
             print("2: Move up")
             print("3: Move right")
             print("4: Move down")
             print("Which action do you want to add: ")
             action_option = positive_int_input()
+            keyboard_input = ""
 
-            print("Which key/string do you want to associate this action with? (Write it and press enter)")
-            keyboard_input = input()
+            if action_option >= 1 and action_option <= 4:
+                print("Which key/string do you want to associate this action with? (Write it and press enter)")
+                keyboard_input = input()
+
             if action_option == 1:
                 # Instantiate an action
                 action = Action(keyboard_input, "Move left", ["move_grid"], grid = board.grid, direction = "left")
@@ -211,8 +215,6 @@ def add_turn_actions(board, marker_dict, piece_markers):
                 action = Action(keyboard_input, "Move down", ["move_grid"], grid = board.grid, direction="down")
                 # Add the action in the list
                 actions.append(action)
-
-
 
             ask_to_add = True
             while ask_to_add:
@@ -248,9 +250,89 @@ def add_turn_actions(board, marker_dict, piece_markers):
 
         return actions
 
-    elif option == "2":
-        print("Option 2")
-        return None
+    elif option == "2":  # tic-tac-toe-like game
+        # Set the type of the board
+        board.type = "tic-tac-toe-like"
+
+        key = 1
+        for marker in piece_markers:
+            marker_dict[key] = marker
+            key += 1
+        # Add dictionary in board object
+        board.piece_marker_dict = marker_dict
+        print("Correspondence (piece : marker)")
+        print(board.piece_marker_dict)
+
+        # Ask victory necessary length to win:
+        ask_length = True
+        while ask_length:
+            print("Put the necessary piece length to win the game:")
+            length_to_win = positive_int_input()
+            if length_to_win <= max(board.height, board.width):
+                board.length_to_win = length_to_win
+                ask_length = False
+            else:
+                print("It is impossible to win the game with this length! Try again")
+                ask_length = True
+
+        repeat = True
+        while repeat:
+            print("Actions available: ")
+            print("1: Add piece")
+            print("2: Remove piece")
+            print("Which action do you want to add: ")
+            action_option = positive_int_input()
+            keyboard_input = ""
+
+            if action_option == 1 or action_option == 2:
+                print("Which key/string do you want to associate this action with? (Write it and press enter)")
+                keyboard_input = input()
+
+            if action_option == 1:
+
+                ask_piece = True
+                chosen_key = 1
+                while ask_piece:
+                    print("Which piece?")
+                    for key, value in marker_dict.items():
+                        if key == 0:
+                            continue
+                        print("Piece number {}: {}".format(key, value))
+
+                    chosen_key = positive_int_input()
+                    if chosen_key not in marker_dict.keys():
+                        print("No corresponding piece number! Try again")
+                        ask_piece = True
+                    else:
+                        ask_piece = False
+
+                # Instantiate an action
+                action = Action(keyboard_input, "Add piece", ["add_piece"], grid = board.grid, value = chosen_key, piece_marker_dict = marker_dict)
+                # Add the action in the list
+                actions.append(action)
+
+            elif action_option == 2:
+                action = Action(keyboard_input, "Remove piece", ["remove_piece"], grid = board.grid)
+                # Add the action in the list
+                actions.append(action)
+
+            ask_to_add = True
+            while ask_to_add:
+                print("Add another action?")
+                print("1: Yes")
+                print("2: No")
+                option = positive_int_input()
+                if option == 1:
+                    repeat = True
+                    ask_to_add = False
+                elif option == 2:
+                    repeat = False
+                    ask_to_add = False
+                else:
+                    print("Invalid option! Try again")
+                    ask_to_add = True
+
+        return actions
     elif option == "3":
         return None
 
